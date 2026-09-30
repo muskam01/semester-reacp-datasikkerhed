@@ -43,13 +43,13 @@ def create_task(payload: Task):
 
 
 @app.post("/users")
-def create_task(payload: Task):
+def create_user(payload: User):
     connection = database.connect()
     try:
         with connection:
             connection.execute(
                 "INSERT INTO users (username, password) VALUES (?, ?)",
-                (payload.title, payload.description),
+                (payload.username, payload.password),
             )
     finally:
         connection.close()
@@ -58,17 +58,17 @@ def create_task(payload: Task):
 
 
 @app.get("/users", response_model=list[User])
-def get_tasks():
+def get_users():
     connection = database.connect()
     try:
         with connection:
             
             breakpoint()
             dbresult = connection.execute(
-                "SELECT username, password FROM tasks"
+                "SELECT username, password FROM users"
             )
             users = [
-                Task(title=row[0], description=row[1])
+                User(username=row[0], password=row[1])
                 for row in dbresult.fetchall()
             ]
             return users
